@@ -1,8 +1,9 @@
 ---
 layout: post
-title:  "블로그 시작!"
-date:   2025-08-22 16:00:00 +0900
-categories: general
+title: 블로그 시작!
+date: 2025-08-22 16:00:00 +0900
+categories: [블로그, 일반]
+tags: [시작, github-pages, jekyll, chirpy]
 ---
 
 드디어 GitHub Pages를 이용한 블로그를 시작했습니다!
