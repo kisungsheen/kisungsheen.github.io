@@ -1,0 +1,332 @@
+================================================================================
+GitHub Pages 블로그 - Chirpy 테마 적용 완전 가이드
+================================================================================
+작성일: 2025년 8월 22일
+최종 업데이트: 2025년 8월 22일 17:05
+
+이 가이드는 기존 GitHub Pages 블로그에 Chirpy 테마를 적용하는 전체 과정을 담고 있습니다.
+
+================================================================================
+📋 목차
+================================================================================
+1. 사전 준비사항
+2. 기존 블로그 백업
+3. Chirpy 테마 다운로드 및 적용
+4. 설정 파일 커스터마이징
+5. GitHub에 푸시 및 트러블슈팅
+6. 최종 확인
+7. 향후 블로그 관리 방법
+8. 트러블슈팅 가이드
+
+================================================================================
+1. 사전 준비사항
+================================================================================
+
+[필요한 것들]
+✅ GitHub 계정 및 기존 username.github.io 저장소
+✅ Git 설치 및 기본 설정
+✅ GitHub Personal Access Token (repo 권한)
+✅ 터미널/명령프롬프트 접근 권한
+
+[Personal Access Token 생성 방법]
+1. GitHub.com 로그인
+2. Settings → Developer settings → Personal access tokens → Tokens (classic)
+3. "Generate new token (classic)" 클릭
+4. Note: "Blog management" (또는 원하는 메모)
+5. Expiration: 90일 또는 1년 선택
+6. Scopes: ✅ repo만 체크 (다른 건 체크하지 말 것)
+7. "Generate token" 클릭 후 토큰 복사 및 안전한 곳에 보관
+
+================================================================================
+2. 기존 블로그 백업
+================================================================================
+
+[터미널에서 수행]
+
+# 기존 저장소 클론
+git clone https://github.com/[USERNAME]/[USERNAME].github.io.git
+cd [USERNAME].github.io
+
+# 백업 폴더 생성
+mkdir -p ../backup-original-blog
+cp -r * ../backup-original-blog/
+
+# 포스트 임시 백업
+cp -r _posts ../temp-posts-backup
+
+[설명]
+- 모든 기존 파일들을 backup-original-blog 폴더에 보관
+- _posts 폴더는 별도로 백업하여 나중에 복원
+- 혹시 문제가 생기면 이 백업으로 언제든 복구 가능
+
+================================================================================
+3. Chirpy 테마 다운로드 및 적용
+================================================================================
+
+[Step 3.1: Chirpy 테마 다운로드]
+cd ..
+git clone https://github.com/cotes2020/jekyll-theme-chirpy.git chirpy-theme
+
+[Step 3.2: 기존 파일 정리]
+cd [USERNAME].github.io
+
+# 기존 Jekyll 관련 파일들 삭제 (README.md는 Git에서 관리하므로 자동 처리)
+rm -rf _* *.md *.html *.yml
+
+[Step 3.3: Chirpy 테마 파일들 복사]
+# 핵심 파일들 복사
+cp ../chirpy-theme/_config.yml .
+cp ../chirpy-theme/index.html .
+cp ../chirpy-theme/Gemfile .
+
+# 테마 디렉토리들 복사
+cp -r ../chirpy-theme/_* .
+cp -r ../chirpy-theme/assets .
+cp -r ../chirpy-theme/_tabs .
+
+[Step 3.4: 기존 포스트 복원]
+cp ../temp-posts-backup/* _posts/
+
+# Chirpy 예시 포스트들 삭제 (선택사항)
+rm _posts/2019-*.md
+
+================================================================================
+4. 설정 파일 커스터마이징
+================================================================================
+
+[Step 4.1: _config.yml 수정]
+
+다음 부분들을 수정해야 합니다:
+
+# 언어 및 시간대 설정
+lang: ko                    # 기본값: en
+timezone: Asia/Seoul        # 기본값: Asia/Shanghai
+
+# 블로그 기본 정보
+title: [당신의 블로그 제목]               # 예: "KiSung's Blog"
+tagline: [블로그 설명]                   # 예: "개발과 일상을 기록하는 블로그"
+description: >-
+  [블로그 상세 설명]                     # SEO용 설명
+
+# 사이트 URL (중요!)
+url: "https://[USERNAME].github.io"      # 반드시 정확히 입력
+
+# GitHub 정보
+github:
+  username: [USERNAME]                   # GitHub 사용자명
+
+# 소셜 정보
+social:
+  name: [실제 이름]                      # 예: "Kisung Sheen"
+  email: [이메일주소]                    # 예: "example@gmail.com"
+  links:
+    - https://github.com/[USERNAME]
+
+# 트위터는 사용하지 않으면 비워둠
+twitter:
+  username:                              # 비워둠
+
+[Step 4.2: 기존 포스트 형식 업데이트]
+
+기존 포스트의 Front Matter를 Chirpy 형식으로 변경:
+
+변경 전:
+---
+layout: post
+title: "포스트 제목"
+date: 2025-08-22 16:00:00 +0900
+categories: general
+---
+
+변경 후:
+---
+layout: post
+title: 포스트 제목
+date: 2025-08-22 16:00:00 +0900
+categories: [블로그, 일반]
+tags: [시작, github-pages, jekyll, chirpy]
+---
+
+[주요 변경점]
+- title에서 따옴표 제거
+- categories를 배열 형식으로 변경: [카테고리1, 카테고리2]
+- tags 추가: [태그1, 태그2, 태그3]
+
+================================================================================
+5. GitHub에 푸시 및 트러블슈팅
+================================================================================
+
+[Step 5.1: Git 사용자 정보 설정]
+git config user.email "[이메일주소]"
+git config user.name "[실제이름]"
+
+[Step 5.2: 변경사항 커밋]
+git add .
+git status                              # 변경사항 확인
+git commit -m "Apply Chirpy theme with Korean localization"
+
+[Step 5.3: GitHub에 푸시]
+git push https://[TOKEN]@github.com/[USERNAME]/[USERNAME].github.io.git main
+
+[TOKEN] 부분에는 생성한 Personal Access Token을 입력
+
+================================================================================
+6. 최종 확인
+================================================================================
+
+[Step 6.1: GitHub에서 확인]
+1. GitHub 저장소 페이지에서 파일들이 정상적으로 업로드되었는지 확인
+2. Actions 탭에서 빌드 상태 확인 (자동으로 Jekyll 빌드 실행됨)
+3. Settings → Pages에서 사이트 상태 확인
+
+[Step 6.2: 블로그 접속 테스트]
+- 주소: https://[USERNAME].github.io
+- 빌드 시간: 보통 1-10분 소요
+- Chirpy 테마가 적용되어 있어야 함
+- 다크/라이트 모드 토글 버튼 확인
+- 사이드바에 카테고리, 태그, About 메뉴 확인
+
+================================================================================
+7. 향후 블로그 관리 방법
+================================================================================
+
+[새 포스트 작성 방법]
+1. _posts 폴더에 파일 생성
+   파일명 형식: YYYY-MM-DD-제목.md
+   예시: 2025-08-23-new-post.md
+
+2. Front Matter 작성:
+   ---
+   layout: post
+   title: 포스트 제목
+   date: 2025-08-23 10:00:00 +0900
+   categories: [카테고리1, 카테고리2]
+   tags: [태그1, 태그2, 태그3]
+   ---
+
+3. 마크다운으로 내용 작성
+
+4. 게시:
+   git add .
+   git commit -m "Add new post: 포스트제목"
+   git push https://[TOKEN]@github.com/[USERNAME]/[USERNAME].github.io.git main
+
+[추가 커스터마이징 옵션]
+- 프로필 사진: assets/img/ 폴더에 이미지 업로드 후 _config.yml의 avatar 설정
+- 댓글 시스템: _config.yml의 comments 섹션 설정
+- Google Analytics: _config.yml의 analytics 섹션 설정
+- 커스텀 파비콘: assets/img/favicons/ 폴더의 아이콘들 교체
+
+================================================================================
+8. 트러블슈팅 가이드
+================================================================================
+
+[문제 1: GitHub Push Protection 오류]
+오류 메시지: "Push cannot contain secrets"
+
+원인: 파일에 Personal Access Token이 포함되어 있음
+해결 방법:
+1. git log --oneline  # 최근 커밋 확인
+2. git reset --hard [문제없는_커밋_해시]  # 문제 커밋 이전으로 리셋
+3. 토큰이 포함된 파일 수정 또는 삭제
+4. 다시 커밋 및 푸시
+
+[문제 2: Workflow 권한 오류]
+오류 메시지: "refusing to allow a Personal Access Token to create or update workflow"
+
+원인: Personal Access Token에 workflow 권한이 없음
+해결 방법:
+Option A - 새 토큰 생성 (workflow 권한 추가)
+Option B - 워크플로우 파일 제거하고 GitHub Pages 기본 빌드 사용 (추천)
+```bash
+rm -rf .github
+git add .
+git commit -m "Remove workflow file - use GitHub Pages default build"
+git push
+```
+
+[문제 3: 빌드 실패]
+증상: Actions 탭에서 빌드가 실패함
+
+확인 사항:
+1. _config.yml 문법 오류 체크 (YAML 형식 확인)
+2. 필수 파일들이 모두 있는지 확인 (index.html, Gemfile 등)
+3. 포스트의 Front Matter 형식 확인
+
+[문제 4: 한글이 깨짐]
+원인: 인코딩 문제
+해결 방법:
+1. _config.yml에서 lang: ko 확인
+2. 파일을 UTF-8로 저장했는지 확인
+3. 브라우저 캐시 삭제 후 재접속
+
+[문제 5: 사이트가 로드되지 않음]
+확인 사항:
+1. GitHub Pages가 활성화되어 있는지 확인 (Settings → Pages)
+2. 저장소가 Public인지 확인
+3. 빌드가 완료될 때까지 5-10분 대기
+4. GitHub Status 페이지에서 GitHub Pages 상태 확인
+
+[문제 6: Git 커밋 오류]
+오류 메시지: "Author identity unknown"
+
+해결 방법:
+git config user.email "[이메일]"
+git config user.name "[이름]"
+
+[문제 7: 이미 존재하는 저장소 이름 오류]
+오류 메시지: "repository already exists"
+
+해결 방법:
+- 기존 저장소를 사용하거나 삭제 후 새로 생성
+- 또는 다른 이름으로 저장소 생성
+
+================================================================================
+9. 추가 참고 자료
+================================================================================
+
+[Chirpy 테마 관련]
+- 공식 저장소: https://github.com/cotes2020/jekyll-theme-chirpy
+- 공식 문서: https://chirpy.cotes.page/
+- 라이브 데모: https://cotes2020.github.io/chirpy-demo/
+
+[Jekyll 관련]
+- 공식 사이트: https://jekyllrb.com/
+- GitHub Pages 문서: https://docs.github.com/pages
+
+[마크다운 문법]
+- 기본 문법: https://www.markdownguide.org/basic-syntax/
+- 확장 문법: https://www.markdownguide.org/extended-syntax/
+
+[Git 명령어]
+- 기본 명령어: https://git-scm.com/docs
+
+================================================================================
+10. 체크리스트
+================================================================================
+
+블로그 설정 완료 체크리스트:
+
+□ Personal Access Token 생성 완료
+□ 기존 블로그 백업 완료  
+□ Chirpy 테마 파일들 복사 완료
+□ _config.yml 개인정보 수정 완료
+□ 기존 포스트 형식 업데이트 완료
+□ GitHub에 성공적으로 푸시 완료
+□ https://[USERNAME].github.io 접속 가능
+□ 다크/라이트 모드 토글 작동 확인
+□ 사이드바 메뉴 작동 확인
+□ 기존 포스트 정상 표시 확인
+
+모든 항목이 체크되면 Chirpy 테마 적용이 완료된 것입니다!
+
+================================================================================
+마지막 업데이트: 2025-08-22 17:05
+작성자: Claude Code Assistant
+
+이 가이드를 따라하면서 문제가 생기면:
+1. 오류 메시지를 정확히 복사해서 확인
+2. 트러블슈팅 가이드 참조
+3. GitHub 저장소의 Actions 탭에서 빌드 로그 확인
+4. 필요시 백업에서 복구 후 다시 시도
+================================================================================
